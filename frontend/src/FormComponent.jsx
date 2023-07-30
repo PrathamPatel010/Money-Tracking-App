@@ -5,16 +5,22 @@ const FormComponent = () => {
     const [name,setName] = useState('');
     const [password,setPassword] = useState('');
     const [email,setEmail] = useState('');
+    
     async function handleSubmit(e){
-        e.preventDefault();
+        e.preventDefault(); 
         const userData = {name,password,email};
-        const response = await axios.post('http://localhost:5000/api/saveuser',userData);
+        const response = await axios.post('http://localhost:5000/api/register',userData);
         if(response.status===200){
             console.log(response);
             setEmail('');
             setName('');
             setPassword('');
         }
+    }
+
+    async function handleGoogleSignin(e){
+        e.preventDefault();
+        window.location.href = "http://localhost:5000/auth/google";
     }
 
     return (
@@ -36,6 +42,9 @@ const FormComponent = () => {
                     </div>
                     <div className="container my-3">
                         <button className="btn btn-success">Submit</button>
+                    </div>
+                    <div className="container my-3">
+                        <button className="btn btn-danger" onClick={handleGoogleSignin}>Sign-in with Google</button>
                     </div>
                 </form>
             </article>
