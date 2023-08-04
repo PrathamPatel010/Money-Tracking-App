@@ -2,10 +2,12 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const auth = require('./auth');
 const passport = require('passport');
+const auth = require('./auth');
 const session = require('express-session');
+const { connectDB } = require('./database/db');
 const PORT = process.env.PORT;
+const User = require('./database/User');
 
 // middleware function
 function isLoggedin(req, res, next) {
@@ -25,9 +27,17 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-app.listen(PORT, () => {
-    console.log(`Server is listening on port ${PORT}`);
-})
+
+// Connecting to database
+try {
+    connectDB();
+    app.listen(PORT, () => {
+        console.log(`Server is listening on port ${PORT}`);
+    })
+} catch (err) {
+    console.log(err);
+}
+
 
 // Routes
 app.get('/', (req, res) => {
@@ -50,12 +60,21 @@ app.get('/auth/google/callback', passport.authenticate('google', {
     failureRedirect: '/auth/google/failure'
 }));
 
-app.get('/auth/success', isLoggedin, (req, res) => {
-    const user = req.user;
-    const { displayName, email, picture } = user;
-    const userInfo = { displayName, email, picture };
-    console.log(userInfo);
-    res.redirect('http://localhost:3000/SuccessPage');
+app.get('/auth/success', isLoggedin, async(req, res) => {
+    try {
+        const user = req.user;
+        const { displayName, email, picture } = user;
+        const userData = {
+            email,
+            name: displayName,
+            imgURL: picture,
+        };
+        const createdUser = await User.create(userData);
+        console.log(createdUser);
+        res.redirect('http://localhost:3000/SuccessPage');
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 app.get('/auth/google/failure', (req, res) => {

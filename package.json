@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "mongoose": "^7.4.2",
     "passport": "^0.6.0",
     "passport-google-oauth2": "^0.2.0"
   }
