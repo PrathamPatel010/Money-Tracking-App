@@ -3,14 +3,16 @@ import axios from 'axios';
 
 const FormComponent = () => {
     const [email,setEmail] = useState('');
+    const [password,setPassword] = useState('');
     
     async function handleSubmit(e){
         e.preventDefault(); 
-        const userData = {email};
+        const userData = {email,password};
         const response = await axios.post('http://localhost:5000/api/login',userData);
         if(response.status===200){
-            console.log(response);
+            console.log(response.data);
             setEmail('');
+            setPassword('');
         }
     }
 
@@ -28,6 +30,10 @@ const FormComponent = () => {
                     <div className="container text-center my-3">
                         <label htmlFor="mail">Email</label>
                         <input type="email" value={email} onChange={(e)=>{setEmail(e.target.value)}} required/>
+                    </div>
+                    <div className="container text-center my-3">
+                        <label htmlFor="password">Password</label>
+                        <input type="password" value={password} onChange={(e)=>{setPassword(e.target.value)}} required/>
                     </div>
                     <div className="container my-3">
                         <button className="btn btn-success">Login</button>

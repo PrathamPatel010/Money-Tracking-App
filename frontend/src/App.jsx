@@ -6,7 +6,7 @@ function App() {
       <Router>
         <Routes>
           <Route path="/" element={<FormComponent/>} />
-          <Route path="/SuccessPage" element={<SuccessPage/>} />
+          <Route path="/SuccessPage/:email" element={<SuccessPage/>} />
         </Routes>
       </Router> 
     )
