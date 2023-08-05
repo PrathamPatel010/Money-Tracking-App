@@ -1,0 +1,69 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #17181f;
+    color: white;
+}
+
+
+/* Styles for MainPage.jsx */
+
+h1.balance {
+    color: #fff;
+    text-align: center;
+}
+
+.form-transaction input {
+    width: 100%;
+    background-color: transparent;
+    color: #ddd;
+    border: 1px solid #30313d;
+    border-radius: 0.25rem;
+}
+
+.form-transaction input[type="datetime-local"] {
+    color: #777;
+}
+
+.form-transaction .basic {
+    display: flex;
+    gap: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.form-transaction .button-submit {
+    background-color: #ddd;
+    width: 100%;
+    border-radius: 0.5rem;
+}
+
+
+/* Styles for Transaction.jsx */
+
+div.transaction {
+    display: flex;
+    justify-content: space-between;
+    border-top: 1px solid #30313d;
+}
+
+div.transaction:first-child {
+    border-top: 0;
+}
+
+div.transaction .left {
+    text-align: left;
+}
+
+div.transaction .right {
+    text-align: right;
+}
+
+div.transaction .price.green {
+    color: #1c1;
+}
+
+div.transaction .price.red {
+    color: #c11;
+}
