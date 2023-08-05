@@ -90,17 +90,30 @@ app.get('/auth/success', isLoggedin, async(req, res) => {
 })
 
 app.post('/api/setPassword', async(req, res) => {
-    const { email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const getUser = await User.findOneAndUpdate({ email }, { "$set": { "password": hashedPassword, "passwordSet": true } }, { new: true });
-    console.log(getUser);
-    res.json({ getUser });
+    try {
+        const { email, password } = req.body;
+        const userExist = await User.findOne({ email });
+        if (!userExist) {
+            res.json({ msg: "You are not registered" });
+            return;
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const getUser = await User.findOneAndUpdate({ email }, { "$set": { "password": hashedPassword, "passwordSet": true } }, { new: true });
+        console.log(getUser);
+        res.json({ getUser });
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 app.post('/api/checkPasswordStatus', async(req, res) => {
-    const { email } = req.body;
-    const getUser = await User.find({ email });
-    res.json(getUser);
+    try {
+        const { email } = req.body;
+        const getUser = await User.findOne({ email });
+        res.json({ passwordSet: getUser.passwordSet });
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 app.get('/auth/google/failure', (req, res) => {
