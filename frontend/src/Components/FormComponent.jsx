@@ -15,7 +15,6 @@ const FormComponent = () => {
             console.log(response.data);
             setEmail('');
             setPassword('');
-            window.location.href="http://localhost:3000/main";
         }
     }
 
