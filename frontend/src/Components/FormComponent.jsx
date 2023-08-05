@@ -1,14 +1,16 @@
 import React, { useState } from 'react';
 import axios from 'axios';
+import '../App.css';
 
 const FormComponent = () => {
+    const base_url = process.env.REACT_APP_BACKEND_BASE_URI;
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
     
     async function handleSubmit(e){
         e.preventDefault(); 
         const userData = {email,password};
-        const response = await axios.post('http://localhost:5000/api/login',userData);
+        const response = await axios.post(`${base_url}/api/login`,userData);
         if(response.status===200){
             console.log(response.data);
             setEmail('');
@@ -18,11 +20,11 @@ const FormComponent = () => {
 
     async function handleGoogleSignin(e){
         e.preventDefault();
-        window.location.href = "http://localhost:5000/auth/google";
+        window.location.href = `${base_url}/auth/google`;
     }
 
     return (
-        <React.Fragment>
+        <>
             <article className="text-center my-5">
                 <h2>Login Form</h2>
                 <p><big>Login with your registered email only</big></p>
@@ -43,7 +45,7 @@ const FormComponent = () => {
                     </div>
                 </form>
             </article>
-        </React.Fragment>
+        </>
     )
 }
 

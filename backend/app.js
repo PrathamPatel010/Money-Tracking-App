@@ -5,10 +5,16 @@ const cors = require('cors');
 const passport = require('passport');
 const auth = require('./auth');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
+const cookieParser = require('cookie-parser');
+const jwtSecret = process.env.jwt_secret;
 const session = require('express-session');
 const { connectDB } = require('./database/db');
 const PORT = process.env.PORT;
 const User = require('./database/User');
+const Transaction = require('./database/Transaction');
+const { authenticate } = require('passport');
+const frontend_url = process.env.FRONTEND_URI;
 
 // middleware function
 function isLoggedin(req, res, next) {
@@ -19,6 +25,7 @@ function isLoggedin(req, res, next) {
 const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(cors())
 app.use(session({
     secret: 'coder',
@@ -47,18 +54,23 @@ app.get('/', (req, res) => {
 
 app.post('/api/login', async(req, res) => {
     const { email, password } = req.body;
-    const userInfo = { email, password };
     const findUser = await User.findOne({ email });
     if (!findUser) {
         res.json({ success: false, error: 'No registered user found' });
         return;
     }
-    const passOk = await bcrypt.compare(findUser.password, userInfo.password);
+    const passOk = await bcrypt.compare(password, findUser.password);
     if (!passOk) {
         res.json({ success: false, error: 'Wrong E-mail OR password' });
         return;
     }
-    res.json({ success: true, msg: 'Password Correct' });
+    jwt.sign({ id: findUser._id, email: findUser.email }, jwtSecret, (err, token) => {
+        if (err) {
+            console.log(err);
+        } else {
+            res.cookie('token', token).json({ id: findUser._id, email: findUser.email });
+        }
+    });
 })
 
 app.get('/auth/google', passport.authenticate('google', {
@@ -69,6 +81,10 @@ app.get('/auth/google/callback', passport.authenticate('google', {
     successRedirect: '/auth/success?email=:email',
     failureRedirect: '/auth/google/failure'
 }));
+
+app.get('/auth/google/failure', (req, res) => {
+    res.send(`Some error occured`);
+})
 
 app.get('/auth/success', isLoggedin, async(req, res) => {
     try {
@@ -89,20 +105,35 @@ app.get('/auth/success', isLoggedin, async(req, res) => {
     }
 })
 
+
 app.post('/api/setPassword', async(req, res) => {
-    const { email, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const getUser = await User.findOneAndUpdate({ email }, { "$set": { "password": hashedPassword, "passwordSet": true } }, { new: true });
-    console.log(getUser);
-    res.json({ getUser });
+    try {
+        const { email, password } = req.body;
+        const userExist = await User.findOne({ email });
+        if (!userExist) {
+            res.json({ msg: "You are not registered" });
+            return;
+        }
+        const hashedPassword = await bcrypt.hash(password, 10);
+        const getUser = await User.findOneAndUpdate({ email }, { "$set": { "password": hashedPassword, "passwordSet": true } }, { new: true });
+        res.json({ getUser });
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 app.post('/api/checkPasswordStatus', async(req, res) => {
-    const { email } = req.body;
-    const getUser = await User.find({ email });
-    res.json(getUser);
+    try {
+        const { email } = req.body;
+        const getUser = await User.findOne({ email });
+        res.json({ passwordSet: getUser.passwordSet });
+    } catch (err) {
+        console.log(err);
+    }
 })
 
-app.get('/auth/google/failure', (req, res) => {
-    res.send(`Some error occured`);
+app.post('/api/transaction', async(req, res) => {
+    const { expense, description, datetime } = req.body;
+    const transactionInfo = { expense, description, datetime };
+    res.json(transactionInfo);
 })
