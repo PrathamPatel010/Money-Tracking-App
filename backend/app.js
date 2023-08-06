@@ -59,23 +59,27 @@ app.get('/', (req, res) => {
 
 app.post('/api/login', async(req, res) => {
     const { email, password } = req.body;
-    const findUser = await User.findOne({ email });
-    if (!findUser) {
-        res.json({ success: false, error: 'No registered user found' });
-        return;
-    }
-    const passOk = await bcrypt.compare(password, findUser.password);
-    if (!passOk) {
-        res.json({ success: false, error: 'Wrong E-mail OR password' });
-        return;
-    }
-    jwt.sign({ id: findUser._id, email: findUser.email }, secret, (err, token) => {
-        if (token) {
-            res.cookie('token', token).json({ success: true, id: findUser._id, email: findUser.email });
-        } else {
-            console.log(err);
+    try {
+        const findUser = await User.findOne({ email });
+        if (!findUser) {
+            res.json({ success: false, error: 'No User found! You need to sign up first' });
+            return;
         }
-    });
+        const passOk = await bcrypt.compare(password, findUser.password);
+        if (!passOk) {
+            res.json({ success: false, error: 'Wrong E-mail OR password' });
+            return;
+        }
+        jwt.sign({ id: findUser._id, email: findUser.email }, secret, (err, token) => {
+            if (token) {
+                res.cookie('token', token).json({ success: true, id: findUser._id, email: findUser.email });
+            } else {
+                console.log(err);
+            }
+        });
+    } catch (err) {
+        console.log(err);
+    }
 })
 
 app.post('/logout', (req, res) => {
@@ -173,7 +177,7 @@ app.delete('/api/clearTransactions', async(req, res) => {
     }
 })
 
-app.get('/api/checkAuth', (req, res) => {
+app.get('/api/checkAuth', async(req, res) => {
     try {
         const isAuth = req.cookies.token ? true : false;
         if (!isAuth) {
@@ -181,7 +185,8 @@ app.get('/api/checkAuth', (req, res) => {
             return;
         } else {
             const payload = jwt.verify(req.cookies.token, secret);
-            res.json({ isAuth: true, email: payload.email });
+            const userInfo = await User.findById(payload.id).select('name imgURL');
+            res.json({ isAuth: true, name: userInfo.name, imgURL: userInfo.imgURL });
         }
     } catch (err) {
         console.log(err);

@@ -8,6 +8,42 @@ body {
 }
 
 
+/* Styles for FormComponent.jsx */
+
+.icon-google {
+    max-width: 3rem;
+    max-height: 1rem;
+}
+
+.login-header {
+    text-align: center;
+}
+
+.loginform-div {
+    border-radius: 0.25rem;
+    text-align: center;
+}
+
+.loginform-div input {
+    width: 50%;
+    background-color: transparent;
+    color: #ddd;
+    border: 1px solid #30313d;
+    border-radius: 0.25rem;
+}
+
+
+/* Styles for SuccessPage.jsx */
+
+.successpage-div button {
+    border-radius: 0.5rem;
+}
+
+.successpage-div input {
+    border-radius: 0.5rem;
+}
+
+
 /* Styles for MainPage.jsx */
 
 h1.balance {
@@ -39,6 +75,13 @@ h1.balance {
     border-radius: 0.5rem;
 }
 
+.form-transaction .button-submit:hover {
+    background-color: #30313d;
+    color: #ddd;
+    width: 100%;
+    border-radius: 0.5rem;
+}
+
 .button-remove {
     box-sizing: border-box;
     background-color: #ddd;
@@ -49,6 +92,17 @@ h1.balance {
 .logoutbtn-div {
     display: flex;
     justify-content: right;
+}
+
+.userImg {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 5rem;
+}
+
+.userInfo-div {
+    display: flex;
+    justify-content: space-between;
 }
 
 

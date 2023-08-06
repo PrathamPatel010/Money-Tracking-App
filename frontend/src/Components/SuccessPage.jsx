@@ -30,20 +30,20 @@ const SuccessPage = () => {
         setPassword('');
     }
     return(
-        <div className="text-center mt-5">
-            <h2>Email Registered!!</h2>
+        <div className="container text-center mt-5">
             { !passwordSet && (
-                <>
+                <div className="successpage-div">
             <h3>Enter password for login</h3>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="my-3">
             <input type="password" placeholder="password" value={password} onChange={(e)=>{setPassword(e.target.value)}} required/>
-            <button type="submit" className="btn btn-primary">Setup</button>
+            <button type="submit" className="btn btn-primary mx-3">Setup</button>
             </form>
-                </>
+            <p>Note: Remember This password as you will need to use this to login</p>
+                </div>
             )}
             { passwordSet && (
                 <>
-                <h3>Password is already set</h3>
+                <h3>Password is set</h3>
                 <Link to="/" className="btn btn-primary">Go Back to login</Link>
                 </>
             )}            
