@@ -4,8 +4,7 @@ const TransactionSchema = new mongoose.Schema({
     expense: { type: String, required: true },
     description: { type: String, required: true },
     datetime: { type: Date, required: true },
+    user: { type: mongoose.SchemaTypes.ObjectId },
 });
 
-const TransactionModel = mongoose.model('Transaction', TransactionSchema);
-
-module.exports = { TransactionModel };
+module.exports = mongoose.model('Transaction', TransactionSchema);

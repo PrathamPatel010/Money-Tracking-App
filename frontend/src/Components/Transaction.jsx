@@ -1,35 +1,28 @@
 import React from 'react'
 import '../App.css';
-const Transaction = () => {
+import {v4 as uuidv4} from 'uuid';
+import {format} from 'date-fns';
+const Transaction = ({transactions}) => {
     return (
         <div className="transactions mt-3">
-            <div className="transaction">
-                <div className="left">
-                    <div className="name">Ordered Cheese Pizza</div>
-                </div>
-                <div className="right">
-                    <div className="price red">-$10</div>
-                    <div className="datetime">05-08-2023</div>
-                </div>
-            </div>
-            <div className="transaction">
-                <div className="left">
-                    <div className="name">Received Payment for application development</div>
-                </div>
-                <div className="right">
-                    <div className="price green">+$800</div>
-                    <div className="datetime">02-08-2023</div>
-                </div>
-            </div>
-            <div className="transaction">
-                <div className="left">
-                    <div className="name">Went on a date</div>
-                </div>
-                <div className="right">
-                    <div className="price red">-$100</div>
-                    <div className="datetime">01-08-2023</div>
-                </div>
-            </div>
+            {
+                transactions.slice().reverse().map((transaction)=>{
+                    const uniqueKey = uuidv4();
+                    const transactionDate = new Date(transaction.datetime);
+                    const formattedDate = format(transactionDate,'dd-MM-yyyy,hh:mm a');
+                    return (
+                    <div className="transaction" key={uniqueKey}>
+                        <div className="left">
+                            <div className="name">{transaction.description}</div>
+                        </div>
+                        <div className="right">
+                            <div className={"price " + (transaction.expense<0?'red':'green')}>{transaction.expense}</div>
+                            <div className="datetime">{formattedDate}</div>
+                        </div>
+                    </div>
+                    )
+                })
+            }
         </div>
     )
 }

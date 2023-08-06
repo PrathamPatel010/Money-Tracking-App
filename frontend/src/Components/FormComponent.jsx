@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState} from 'react';
 import axios from 'axios';
 import '../App.css';
 
@@ -6,15 +6,18 @@ const FormComponent = () => {
     const base_url = process.env.REACT_APP_BACKEND_BASE_URI;
     const [email,setEmail] = useState('');
     const [password,setPassword] = useState('');
-    
+
     async function handleSubmit(e){
         e.preventDefault(); 
         const userData = {email,password};
-        const response = await axios.post(`${base_url}/api/login`,userData);
-        if(response.status===200){
+        const response = await axios.post(`${base_url}/api/login`,userData,{ withCredentials: true });
+        if(response.data.success===true){
             console.log(response.data);
             setEmail('');
             setPassword('');
+            setTimeout(()=>{
+                window.location.href = "/main";
+            },2000);
         }
     }
 
