@@ -7,8 +7,9 @@ const auth = require('./auth');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
-const jwtSecret = process.env.jwt_secret;
+const secret = process.env.secret;
 const session = require('express-session');
+const mongoose = require('mongoose');
 const { connectDB } = require('./database/db');
 const PORT = process.env.PORT;
 const User = require('./database/User');
@@ -26,7 +27,11 @@ const app = express();
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors())
+const corsOption = {
+    origin: frontend_url,
+    credentials: true,
+};
+app.use(cors(corsOption));
 app.use(session({
     secret: 'coder',
     resave: false,
@@ -64,11 +69,11 @@ app.post('/api/login', async(req, res) => {
         res.json({ success: false, error: 'Wrong E-mail OR password' });
         return;
     }
-    jwt.sign({ id: findUser._id, email: findUser.email }, jwtSecret, (err, token) => {
-        if (err) {
-            console.log(err);
+    jwt.sign({ id: findUser._id, email: findUser.email }, secret, (err, token) => {
+        if (token) {
+            res.cookie('token', token).json({ success: true, id: findUser._id, email: findUser.email });
         } else {
-            res.cookie('token', token).json({ id: findUser._id, email: findUser.email });
+            console.log(err);
         }
     });
 })
@@ -134,6 +139,22 @@ app.post('/api/checkPasswordStatus', async(req, res) => {
 
 app.post('/api/transaction', async(req, res) => {
     const { expense, description, datetime } = req.body;
-    const transactionInfo = { expense, description, datetime };
-    res.json(transactionInfo);
+    try {
+        const payload = jwt.verify(req.cookies.token, secret);
+        const response = await Transaction.create({ expense, description, datetime, user: payload.id });
+        console.log(response);
+        res.json(response);
+    } catch (err) {
+        console.log(err);
+    }
+})
+
+app.get('/api/transactions', async(req, res) => {
+    try {
+        const payload = jwt.verify(req.cookies.token, secret);
+        const transactions = await Transaction.find({ user: new mongoose.Types.ObjectId(payload.id) }).select('expense description datetime -_id');
+        res.json(transactions);
+    } catch (err) {
+        console.log(err);
+    }
 })
