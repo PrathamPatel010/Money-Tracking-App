@@ -1,15 +1,33 @@
-import React,{useEffect, useState} from 'react'
+import React,{useEffect, useState} from 'react';
 import Transaction from './Transaction';
 import axios from 'axios';
-import '../App.css'
+import '../App.css';
+
 
 const Main = () => {
     const base_url = process.env.REACT_APP_BACKEND_BASE_URI;
+    const [email,setEmail] = useState('');
     const [expense,setExpense] = useState('');
     const [description,setDescription] = useState('');
     const [datetime,setDatetime] = useState('');
     const [transactions,setTransactions] = useState([]);
     const [balance, setBalance] = useState(0);
+
+    useEffect(()=>{
+        const checkAuth = async () => {
+            try {
+                const response = await axios.get(`${base_url}/api/checkAuth`, { withCredentials: true });
+                if (!response.data.isAuth) {
+                    window.location.href = '/'; // Redirect to login page
+                } else{
+                    setEmail(response.data.email);
+                }
+            } catch (err) {
+                console.log(err);
+            }
+        };
+        checkAuth();
+    },[base_url,email]);
 
     const clearTransactions = async() => {
         console.log(`function called`);
@@ -67,9 +85,27 @@ const Main = () => {
         }
     }
 
+    const logout = async() => {
+        try{
+            await axios.post(`${base_url}/logout`,{},{withCredentials:true});
+            console.log(`Not logged in`);
+            setTimeout(()=>{
+                window.location.href="/";
+            },3000)
+        } catch(err){
+            console.log(err);
+        }
+    }
+
     return (
         <>
         <main>
+        <div>
+            <h1>Logged in as {email}</h1>
+        </div>
+        <div className="container logoutbtn-div">
+            <button type="button-submit" className="btn btn-primary" onClick={logout}>Logout</button>
+        </div>
         <h1 className="balance">${balance}</h1>
             <form className="form-transaction" onSubmit={addNewTransaction}>
                 <div className="container basic">
@@ -85,7 +121,6 @@ const Main = () => {
                 <div className="container">
                     <button type="submit" className=" button-submit my-2 p-1">Add new Transaction</button>
                     <button type="button" className="button-submit my-2 p-1" onClick={clearTransactions}>Remove All transaction</button>           
-                    {transactions.length}
                 </div>
             </form>
         </main>

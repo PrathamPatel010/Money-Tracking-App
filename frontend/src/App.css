@@ -46,6 +46,11 @@ h1.balance {
     border-radius: 0.5rem;
 }
 
+.logoutbtn-div {
+    display: flex;
+    justify-content: right;
+}
+
 
 /* Styles for Transaction.jsx */
 

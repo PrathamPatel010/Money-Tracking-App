@@ -78,6 +78,10 @@ app.post('/api/login', async(req, res) => {
     });
 })
 
+app.post('/logout', (req, res) => {
+    res.clearCookie('token').send();
+});
+
 app.get('/auth/google', passport.authenticate('google', {
     scope: ['email', 'profile']
 }))
@@ -164,6 +168,21 @@ app.delete('/api/clearTransactions', async(req, res) => {
         const payload = jwt.verify(req.cookies.token, secret);
         await Transaction.deleteMany({ user: payload.id });
         res.json({ success: true, msg: "User Transactions cleared" });
+    } catch (err) {
+        console.log(err);
+    }
+})
+
+app.get('/api/checkAuth', (req, res) => {
+    try {
+        const isAuth = req.cookies.token ? true : false;
+        if (!isAuth) {
+            res.json({ isAuth });
+            return;
+        } else {
+            const payload = jwt.verify(req.cookies.token, secret);
+            res.json({ isAuth: true, email: payload.email });
+        }
     } catch (err) {
         console.log(err);
     }
