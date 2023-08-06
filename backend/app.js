@@ -158,3 +158,13 @@ app.get('/api/transactions', async(req, res) => {
         console.log(err);
     }
 })
+
+app.delete('/api/clearTransactions', async(req, res) => {
+    try {
+        const payload = jwt.verify(req.cookies.token, secret);
+        await Transaction.deleteMany({ user: payload.id });
+        res.json({ success: true, msg: "User Transactions cleared" });
+    } catch (err) {
+        console.log(err);
+    }
+})

@@ -5,11 +5,32 @@ import '../App.css'
 
 const Main = () => {
     const base_url = process.env.REACT_APP_BACKEND_BASE_URI;
-    const [balance,setBalance] = useState(0);
     const [expense,setExpense] = useState('');
     const [description,setDescription] = useState('');
     const [datetime,setDatetime] = useState('');
     const [transactions,setTransactions] = useState([]);
+    const [balance, setBalance] = useState(0);
+
+    const clearTransactions = async() => {
+        console.log(`function called`);
+        try{
+            const response = await axios.delete(`${base_url}/api/clearTransactions`,{withCredentials:true});
+            if(response.data.success){
+                setTransactions([]);
+                setBalance(0);
+            }
+        } catch(err){
+            console.log(err);
+        }
+    }
+
+    useEffect(() => {
+        let newBalance = 0;
+        for (const transaction of transactions) {
+            newBalance = newBalance + parseFloat(transaction.expense);
+        }
+        setBalance(newBalance);
+    }, [transactions]);
 
     useEffect(()=>{
         const getTransactions = async(e) => {
@@ -63,6 +84,7 @@ const Main = () => {
                 </div>
                 <div className="container">
                     <button type="submit" className=" button-submit my-2 p-1">Add new Transaction</button>
+                    <button type="button" className="button-submit my-2 p-1" onClick={clearTransactions}>Remove All transaction</button>           
                     {transactions.length}
                 </div>
             </form>
