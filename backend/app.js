@@ -90,7 +90,7 @@ app.get('/auth/google', passport.authenticate('google', {
 }))
 
 app.get('/auth/google/callback', passport.authenticate('google', {
-    successRedirect: '/auth/success?email=:email',
+    successRedirect: '/auth/success',
     failureRedirect: '/auth/google/failure'
 }));
 
@@ -111,7 +111,8 @@ app.get('/auth/success', isLoggedin, async(req, res) => {
         };
         const createdUser = await User.create(userData);
         console.log(createdUser);
-        res.redirect(`${frontend_url}/SuccessPage/${email}`);
+        const frontendRedirectUrl = `${frontend_url}/SuccessPage/${encodeURIComponent(email)}`;
+        res.redirect(frontendRedirectUrl);
     } catch (err) {
         console.log(err);
     }
