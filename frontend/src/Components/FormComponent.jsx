@@ -17,10 +17,8 @@ const FormComponent = () => {
             setEmail('');
             setPassword('');
             setTimeout(()=>{
-                window.onbeforeunload = function(){
-                    window.location.href = "/main";
-                };
-            },2000);
+                window.location.href="/main";
+            },6000);
             return;
         }
         if(response.data){
