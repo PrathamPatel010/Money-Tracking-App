@@ -18,7 +18,7 @@ const FormComponent = () => {
             setPassword('');
             setTimeout(()=>{
                 window.location.href="/main";
-            },6000);
+            },2000);
             return;
         }
         if(response.data){
