@@ -33,7 +33,7 @@ const SuccessPage = () => {
         <div className="container text-center mt-5">
             { !passwordSet && (
                 <div className="successpage-div">
-            <h3>Enter password for login</h3>
+            <h3>Setup Password</h3>
             <form onSubmit={handleSubmit} className="my-3">
             <input type="password" placeholder="password" value={password} onChange={(e)=>{setPassword(e.target.value)}} required/>
             <button type="submit" className="btn btn-primary mx-3">Setup</button>
