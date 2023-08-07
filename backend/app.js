@@ -33,7 +33,7 @@ const corsOption = {
 };
 app.use(cors(corsOption));
 app.use(session({
-    secret: 'coder',
+    secret: process.env.sessionsecret,
     resave: false,
     saveUninitialized: true,
     cookie: { secure: false },
@@ -51,10 +51,9 @@ try {
     console.log(err);
 }
 
-
 // Routes
 app.get('/', (req, res) => {
-    res.send(`<h1>Backend is running</h1>`);
+    res.send(`<h1>Backend is up & running</h1>`);
 })
 
 app.post('/api/login', async(req, res) => {
@@ -112,7 +111,7 @@ app.get('/auth/success', isLoggedin, async(req, res) => {
         };
         const createdUser = await User.create(userData);
         console.log(createdUser);
-        res.redirect(`http://localhost:3000/SuccessPage/${email}`);
+        res.redirect(`${frontend_url}/SuccessPage/${email}`);
     } catch (err) {
         console.log(err);
     }
