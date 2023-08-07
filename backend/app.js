@@ -71,7 +71,7 @@ app.post('/api/login', async(req, res) => {
         }
         jwt.sign({ id: findUser._id, email: findUser.email }, secret, (err, token) => {
             if (token) {
-                res.cookie('token', token, { httpOnly: false, secure: false, sameSite: 'none' }).json({ success: true, id: findUser._id, email: findUser.email });
+                res.cookie('token', token, { httpOnly: false, secure: true, sameSite: 'none' }).json({ success: true, id: findUser._id, email: findUser.email });
             } else {
                 console.log(err);
             }
@@ -82,7 +82,7 @@ app.post('/api/login', async(req, res) => {
 })
 
 app.post('/logout', (req, res) => {
-    res.clearCookie('token', { httpOnly: false, secure: false, sameSite: 'none' }).send();
+    res.clearCookie('token', { httpOnly: false, secure: true, sameSite: 'none' }).send();
 });
 
 app.get('/auth/google', passport.authenticate('google', {
