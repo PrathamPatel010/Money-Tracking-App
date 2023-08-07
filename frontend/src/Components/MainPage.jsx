@@ -92,7 +92,7 @@ const Main = () => {
             console.log(`Not logged in`);
             setTimeout(()=>{
                 window.location.href="/";
-            },3000)
+            },1000)
         } catch(err){
             console.log(err);
         }
