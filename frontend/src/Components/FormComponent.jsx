@@ -38,7 +38,7 @@ const FormComponent = () => {
         <>
             <article className="container my-5">
                 <div className="login-header">
-                    <h2>Login Form</h2>
+                    <h2>Login</h2>
                     <big>Login with your registered email only</big>
                 </div>
                 <form method="post" onSubmit={handleSubmit} className="container loginform-div">
@@ -66,10 +66,10 @@ const FormComponent = () => {
                 <div className="container">
                     <div className="row justify-content-center">
                         <div className="col-12 my-3">
-                            <h2>Made with ❤ by Pratham</h2>
+                            <h4>Made with ❤ by Pratham</h4>
                         </div>
                         <div className="col-12 my-3">
-                            <h3>Let's Connect On Socials</h3>
+                            <h5>Let's Connect On Socials</h5>
                         </div>
                         <div className="row justify-content-center my-2">
                             <div className="col-12 col-md-4 text-center">
