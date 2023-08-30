@@ -12,17 +12,14 @@ const FormComponent = () => {
         const userData = {email,password};
         const response = await axios.post(`${base_url}/api/login`,userData,{ withCredentials: true });
         if(response.data.success===true){
-            setAcknowldgment('Success!! Please wait while you are being directed');
+            setAcknowldgment('Success!! Please wait while you are being redirected');
             console.log(response.data);
             setEmail('');
             setPassword('');
-            setTimeout(()=>{
-                window.location.href="/main";
-            },2000);
+            window.location.href="/main";
             return;
         }
         if(response.data){
-            setEmail('');
             setPassword('');
             console.log(response.data);
             setAcknowldgment(response.data.error);
@@ -43,10 +40,10 @@ const FormComponent = () => {
                 </div>
                 <form method="post" onSubmit={handleSubmit} className="container loginform-div">
                     <div className="container my-3">
-                        <input type="email" value={email} placeholder="Email" onChange={(e)=>{setEmail(e.target.value)}} required/>
+                        <input type="email" name="email" value={email} placeholder="Email" onChange={(e)=>{setEmail(e.target.value)}} autoComplete="on" required/>
                     </div>
                     <div className="container my-3">
-                        <input type="password" value={password} placeholder="password" onChange={(e)=>{setPassword(e.target.value)}} required/>
+                        <input type="password" value={password} placeholder="password" onChange={(e)=>{setPassword(e.target.value)}} autoComplete="off" required/>
                     </div>
                     <div className="container mt-3">
                         <button className="btn btn-success">Login</button>
