@@ -12,6 +12,7 @@ const Main = () => {
     const [datetime,setDatetime] = useState('');
     const [transactions,setTransactions] = useState([]);
     const [balance, setBalance] = useState(0);
+    const [acknowledgment,setAcknowledgment] = useState('');
 
     useEffect(()=>{
         const checkAuth = async () => {
@@ -22,6 +23,7 @@ const Main = () => {
                 } else{
                     setName(response.data.name);
                     setImgURI(response.data.imgURL);
+                    setAcknowledgment(`Logged in as ${name}`);
                 }
             } catch (err) {
                 console.log(err);
@@ -89,7 +91,8 @@ const Main = () => {
     const logout = async() => {
         try{
             await axios.post(`${base_url}/logout`,{},{withCredentials:true});
-            console.log(`Not logged in`);
+            console.log(`Logging out`);
+            setAcknowledgment(`Logging out`);
             setTimeout(()=>{
                 window.location.href="/";
             },1000)
@@ -102,7 +105,7 @@ const Main = () => {
         <>
         <main>
         <div className="container userInfo-div mt-4 mb-3">
-            <h3 className="username-ack userInfo">Logged in as {name}</h3>
+            <h3 className="username-ack userInfo">{acknowledgment}</h3>
             <img className="img img-thumbnail img-fluid userImg" src={imgURI} alt="userimg" />
         </div>
         <div className="container logoutbtn-div mt-4">
