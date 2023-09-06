@@ -10,6 +10,7 @@ const FormComponent = () => {
     async function handleSubmit(e){
         e.preventDefault(); 
         const userData = {email,password};
+        setAcknowldgment('Processing... Please wait...');
         const response = await axios.post(`${base_url}/api/login`,userData,{ withCredentials: true });
         if(response.data.success===true){
             setAcknowldgment('Success!! Please wait while you are being redirected');

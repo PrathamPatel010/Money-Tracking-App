@@ -42,14 +42,17 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Connecting to database
-try {
-    connectDB();
-    app.listen(PORT, () => {
-        console.log(`Server is listening on port ${PORT}`);
-    })
-} catch (err) {
-    console.log(err);
+const getDbConnection = async() => {
+    try {
+        await connectDB();
+        app.listen(PORT, () => {
+            console.log(`Server is listening on port ${PORT}`);
+        })
+    } catch (err) {
+        console.log(err);
+    }
 }
+getDbConnection();
 
 // Routes
 app.get('/', (req, res) => {
