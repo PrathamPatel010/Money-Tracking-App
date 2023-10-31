@@ -1,33 +1,36 @@
-import React, { useState} from 'react';
+import React, { useState } from 'react';
 import axios from 'axios';
+import SpinnerLoader from "./SpinnerLoader";
+
 import '../App.css';
 const FormComponent = () => {
     const base_url = process.env.REACT_APP_BACKEND_BASE_URI;
-    const [email,setEmail] = useState('');
-    const [password,setPassword] = useState('');
-    const [acknowledgment,setAcknowldgment] = useState('');
-
-    async function handleSubmit(e){
-        e.preventDefault(); 
-        const userData = {email,password};
-        setAcknowldgment('Processing... Please wait...');
-        const response = await axios.post(`${base_url}/api/login`,userData,{ withCredentials: true });
-        if(response.data.success===true){
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [acknowledgment, setAcknowldgment] = useState('');
+    const [showLoader, setShowLoader] = useState(false);
+    async function handleSubmit(e) {
+        e.preventDefault();
+        setShowLoader(true);
+        const userData = { email, password };
+        const response = await axios.post(`${base_url}/api/login`, userData, { withCredentials: true });
+        setShowLoader(false);
+        if (response.data.success === true) {
             setAcknowldgment('Success!! Please wait while you are being redirected');
             console.log(response.data);
             setEmail('');
             setPassword('');
-            window.location.href="/main";
+            window.location.href = "/main";
             return;
         }
-        if(response.data){
+        if (response.data) {
             setPassword('');
             console.log(response.data);
             setAcknowldgment(response.data.error);
         }
     }
 
-    async function handleGoogleSignin(e){
+    async function handleGoogleSignin(e) {
         e.preventDefault();
         window.location.href = `${base_url}/auth/google`;
     }
@@ -41,14 +44,19 @@ const FormComponent = () => {
                 </div>
                 <form method="post" onSubmit={handleSubmit} className="container loginform-div">
                     <div className="container my-3">
-                        <input type="email" name="email" value={email} placeholder="Email" onChange={(e)=>{setEmail(e.target.value)}} autoComplete="on" required/>
+                        <input type="email" name="email" value={email} placeholder="Email" onChange={(e) => { setEmail(e.target.value) }} autoComplete="on" required />
                     </div>
                     <div className="container my-3">
-                        <input type="password" value={password} placeholder="password" onChange={(e)=>{setPassword(e.target.value)}} autoComplete="off" required/>
+                        <input type="password" value={password} placeholder="password" onChange={(e) => { setPassword(e.target.value) }} autoComplete="off" required />
                     </div>
-                    <div className="container mt-3">
-                        <button className="btn btn-success">Login</button>
-                    </div>
+                    {
+                        showLoader ? (<SpinnerLoader />) : (
+                            <div className="container mt-3">
+                                <button className="btn btn-success">Login</button>
+                            </div>
+                        )
+                    }
+
                     <div className="container mb-4">
                         {acknowledgment}
                     </div>
