@@ -16,6 +16,7 @@ const FormComponent = () => {
         const response = await axios.post(`${base_url}/api/login`, userData, { withCredentials: true });
         setShowLoader(false);
         if (response.data.success === true) {
+            document.getElementById('ack-div').style.color='green';
             setAcknowldgment('Success!! Please wait while you are being redirected');
             console.log(response.data);
             setEmail('');
@@ -26,6 +27,7 @@ const FormComponent = () => {
         if (response.data) {
             setPassword('');
             console.log(response.data);
+            document.getElementById('ack-div').style.color='red';
             setAcknowldgment(response.data.error);
         }
     }
@@ -44,10 +46,10 @@ const FormComponent = () => {
                 </div>
                 <form method="post" onSubmit={handleSubmit} className="container loginform-div">
                     <div className="container my-3">
-                        <input type="email" name="email" value={email} placeholder="Email" onChange={(e) => { setEmail(e.target.value) }} autoComplete="on" required />
+                        <input type="email" name="email" value={email} placeholder="Email" onChange={(e) => { setAcknowldgment(''); setEmail(e.target.value); }} autoComplete="on" required />
                     </div>
                     <div className="container my-3">
-                        <input type="password" value={password} placeholder="password" onChange={(e) => { setPassword(e.target.value) }} autoComplete="off" required />
+                        <input type="password" value={password} placeholder="password" onChange={(e) => { setAcknowldgment(''); setPassword(e.target.value); }} autoComplete="off" required />
                     </div>
                     {
                         showLoader ? (<SpinnerLoader />) : (
@@ -56,8 +58,11 @@ const FormComponent = () => {
                             </div>
                         )
                     }
+                    <div className={'my-3'}>
+                        <h6>Test User: Email:ppratham812@gmail.com & password:asd</h6>
+                    </div>
 
-                    <div className="container mb-4">
+                    <div id={'ack-div'} className="container mb-4">
                         {acknowledgment}
                     </div>
                     <div className="mt-md-4 mt-3">
