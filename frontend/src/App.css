@@ -133,3 +133,7 @@ div.transaction .price.green {
 div.transaction .price.red {
     color: #c11;
 }
+
+.delete-btn-div{
+    display: flex;
+}

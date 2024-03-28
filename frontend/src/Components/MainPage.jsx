@@ -33,7 +33,6 @@ const Main = () => {
     }, [base_url, name]);
 
     const clearTransactions = async () => {
-        console.log(`function called`);
         try {
             const response = await axios.delete(`${base_url}/api/clearTransactions`, { withCredentials: true });
             if (response.data.success) {
@@ -60,9 +59,9 @@ const Main = () => {
             const formattedTransactions = response.data.map(transaction => ({
                 expense: transaction.expense,
                 description: transaction.description,
-                datetime: transaction.datetime
-            }));
-            console.log(formattedTransactions);
+                datetime: transaction.datetime,
+                id: transaction._id
+            })).sort((a,b)=>new Date(a.datetime)-new Date(b.datetime));
             setTransactions(formattedTransactions);
         }
         getTransactions();
@@ -73,13 +72,13 @@ const Main = () => {
         const transactionInfo = { expense, description, datetime };
         try {
             const response = await axios.post(`${base_url}/api/transaction`, transactionInfo, { withCredentials: true });
-            console.log(response.data);
             setTransactions(prevTransactions => [...prevTransactions, {
                 expense: transactionInfo.expense,
                 description: transactionInfo.description,
-                datetime: transactionInfo.datetime
+                datetime: transactionInfo.datetime,
+                id: response.data._id,
             }
-            ]);
+            ].sort((a,b)=> new Date(a.datetime) - new Date(b.datetime)))
             setExpense('');
             setDescription('');
             setDatetime('');
@@ -111,7 +110,7 @@ const Main = () => {
                 <div className="container logoutbtn-div mt-4">
                     <button type="button-submit" className="btn btn-secondary" onClick={logout}>Logout</button>
                 </div>
-                <h1 className="balance">${balance}</h1>
+                <h1 className="balance">₹ {balance}</h1>
                 <form className="form-transaction" onSubmit={addNewTransaction}>
                     <div className="container basic">
                         <input type="text" value={expense} onChange={(e) => { setExpense(e.target.value) }} placeholder={'Money e.g. +150,-120 etc.'} required />
@@ -131,7 +130,7 @@ const Main = () => {
             </main>
 
             <section className="container">
-                <Transaction transactions={transactions} />
+                <Transaction setTransactions={setTransactions} transactions={transactions} />
             </section>
         </>
     )

@@ -163,7 +163,7 @@ app.post('/api/transaction', async(req, res) => {
 app.get('/api/transactions', async(req, res) => {
     try {
         const payload = jwt.verify(req.cookies.token, secret);
-        const transactions = await Transaction.find({ user: new mongoose.Types.ObjectId(payload.id) }).select('expense description datetime -_id');
+        const transactions = await Transaction.find({ user: new mongoose.Types.ObjectId(payload.id) }).select('expense description datetime _id');
         res.json(transactions);
     } catch (err) {
         console.log(err);
@@ -195,3 +195,14 @@ app.get('/api/checkAuth', async(req, res) => {
         console.log(err);
     }
 })
+
+app.delete('/api/transaction/:id',async(req,res)=>{
+    try{
+        console.log(req.params);
+        const response = await Transaction.findByIdAndRemove(req.params.id);
+        console.log(response);
+        return res.json({status:200, message:'Transaction removed'});
+    } catch (error){
+        console.log(error);
+    }
+});
